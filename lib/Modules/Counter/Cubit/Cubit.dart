@@ -1,9 +1,14 @@
 import 'dart:async';
 
-import 'package:counter_app/States.dart';
 
+
+import 'package:counter_app/Modules/Counter/Cubit/States.dart';
+import 'package:counter_app/Modules/Counter/DataSource/dataSource.dart';
+import 'package:counter_app/Modules/Counter/repo/CounterRepo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 
 class MyCubit extends Cubit<States> {
@@ -12,33 +17,36 @@ class MyCubit extends Cubit<States> {
   int count =0;
   increace()async{
     emit(LoadingincreaceState());
-    //Future.delayed(Duration(milliseconds: 100), () {
-      count++;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('counter', count);
-    //});
 
+     final prefs = await SharedPreferences.getInstance();
+
+    final data=CounterRepo(Sherdpref(
+      prefs,count
+    ));
+    count=await data.getcounter() ;
+    count++;
 
     emit(SuccessincreaceState());
   }
   decreace()async{
     emit(LoadingdecreaceState());
 
-    //Timer(Duration(milliseconds: 500), () {
-      count--;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('counter', count);
-    //});
 
+    final data=CounterRepo(Sherdpref(
+        prefs,count
+    ));
+    count=await data.getcounter() ;
+    count--;
     emit(SuccessdecreacState());
   }
   reset()async{
     emit(LoadingresetState());
-    //Timer(Duration(milliseconds: 500), () {
+
       count=0;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('counter', count);
-    //});
+
 
     emit(SuccessresetState());
   }
